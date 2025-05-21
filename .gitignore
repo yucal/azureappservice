@@ -1,1 +1,11 @@
+# .gitignore
 node_modules/
+*.log
+.vscode/
+dist/
+build/
+*.zip
+*.tar.gz
+*.env
+.DS_Store
+.git/

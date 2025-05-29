@@ -3,7 +3,7 @@ import requests
 
 app = Flask(__name__)
 
-@app.route('/check_google')
+@app.route('/')
 def check_google():
     try:
         response = requests.get("https://www.google.com", timeout=5)

@@ -1,22 +1,31 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template
 import requests
 
 app = Flask(__name__)
 
 @app.route('/')
-def check_google():
+def home():
+    status = "Unknown"
+    details = ""
+
     try:
         response = requests.get("https://www.google.com", timeout=5)
         if response.status_code == 200:
-            return jsonify(status="Google is reachable", code=200)
+            status = "✅ Google is reachable"
         else:
-            return jsonify(status="Google responded with error", code=response.status_code)
+            status = "⚠️ Google responded with error"
+            details = f"Status code: {response.status_code}"
     except requests.ConnectionError:
-        return jsonify(status="Google is unreachable", error="Connection error")
+        status = "❌ Google is unreachable"
+        details = "Connection error"
     except requests.Timeout:
-        return jsonify(status="Google is unreachable", error="Request timed out")
+        status = "❌ Google is unreachable"
+        details = "Request timed out"
     except Exception as e:
-        return jsonify(status="Google is unreachable", error=str(e))
+        status = "❌ Google is unreachable"
+        details = str(e)
+
+    return render_template("index.html", status=status, details=details)
 
 if __name__ == '__main__':
     app.run(debug=True)

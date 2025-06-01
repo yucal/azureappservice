@@ -32,3 +32,4 @@ jobs:
           baseAppName=myapp
           regionShort=eus
           environment=dev
+

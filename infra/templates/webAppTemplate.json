@@ -2,10 +2,9 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "variables": {
-    "location": "eastus",
+    "location": "eastus2",
     "baseAppName": "myapp",
-    "regionShort": "eus",
-    "environment": "dev",
+    "regionShort": "eus2",
     "webAppName": "[concat(variables('baseAppName'), '-web-', variables('regionShort'))]",
     "appServicePlanName": "[concat(variables('baseAppName'), '-plan-', variables('regionShort'))]"
   },
@@ -16,8 +15,8 @@
       "name": "[variables('appServicePlanName')]",
       "location": "[variables('location')]",
       "sku": {
-        "name": "S1",
-        "tier": "Standard"
+        "name": "F1",
+        "tier": "Free"
       },
       "properties": {}
     },

@@ -28,7 +28,6 @@ jobs:
         resourceGroupName: 'rg-dev-myapp'
         template: 'infra/templates/webAppTemplate.json'
         parameters: |
-          location=eastus
+          location=germanywestcentral
           baseAppName=myapp
-          regionShort=eus
           environment=dev

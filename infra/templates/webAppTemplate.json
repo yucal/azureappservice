@@ -1,20 +1,39 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "location": { "type": "string" },
-      "webAppName": { "type": "string" }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "type": "string" },
+    "baseAppName": { "type": "string" },
+    "regionShort": { "type": "string" },
+    "environment": { "type": "string" }
+  },
+  "variables": {
+    "webAppName": "[concat(parameters('baseAppName'), '-web-', parameters('regionShort'))]",
+    "appServicePlanName": "[concat(parameters('baseAppName'), '-plan-', parameters('regionShort'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('appServicePlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "S1",
+        "tier": "Standard"
+      },
+      "properties": {}
     },
-    "resources": [
-      {
-        "type": "Microsoft.Web/sites",
-        "apiVersion": "2022-03-01",
-        "name": "patates",
-        "location": "[parameters('location')]",
-        "properties": {
-          "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'myAppServicePlan')]"
-        }
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('webAppName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ],
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
       }
-    ]
-  }
-  
+    }
+  ]
+}

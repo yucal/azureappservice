@@ -1,22 +1,20 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {
-    "location": { "type": "string" },
-    "baseAppName": { "type": "string" },
-    "regionShort": { "type": "string" },
-    "environment": { "type": "string" }
-  },
   "variables": {
-    "webAppName": "[concat(parameters('baseAppName'), '-web-', parameters('regionShort'))]",
-    "appServicePlanName": "[concat(parameters('baseAppName'), '-plan-', parameters('regionShort'))]"
+    "location": "eastus",
+    "baseAppName": "myapp",
+    "regionShort": "eus",
+    "environment": "dev",
+    "webAppName": "[concat(variables('baseAppName'), '-web-', variables('regionShort'))]",
+    "appServicePlanName": "[concat(variables('baseAppName'), '-plan-', variables('regionShort'))]"
   },
   "resources": [
     {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2022-03-01",
       "name": "[variables('appServicePlanName')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "sku": {
         "name": "S1",
         "tier": "Standard"
@@ -27,7 +25,7 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('webAppName')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
       ],

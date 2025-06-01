@@ -9,7 +9,7 @@
       {
         "type": "Microsoft.Web/sites",
         "apiVersion": "2022-03-01",
-        "name": "[parameters('webAppName')]",
+        "name": "patates",
         "location": "[parameters('location')]",
         "properties": {
           "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'myAppServicePlan')]"

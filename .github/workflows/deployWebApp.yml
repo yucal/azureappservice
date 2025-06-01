@@ -17,10 +17,6 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Create resource group if not exists
-      run: |
-        az group create --name rg-dev-myapp --location eastus
-
     - name: Deploy ARM Template
       uses: azure/arm-deploy@v1
       with:
@@ -28,6 +24,7 @@ jobs:
         resourceGroupName: 'rg-dev-myapp'
         template: 'infra/templates/webAppTemplate.json'
         parameters: |
-          location=germanywestcentral
+          location=eastus
           baseAppName=myapp
+          regionShort=eus
           environment=dev

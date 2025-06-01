@@ -1,4 +1,4 @@
-name: Deploy ARM Template
+name: Deploy Azure Resources
 
 on:
   push:
@@ -8,22 +8,27 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Deploy ARM Template
-        uses: azure/arm-deploy@v1
-        with:
-          subscriptionId: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
-          resourceGroupName: 'rg-dev-myapp'
-          template: 'infra/templates/webAppTemplate.json'
-          parameters: |
-            location=eastus
-            baseAppName=myapp
-            regionShort=eus
-            environment=dev
+    - name: Create resource group if not exists
+      run: |
+        az group create --name rg-dev-myapp --location eastus
+
+    - name: Deploy ARM Template
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
+        resourceGroupName: 'rg-dev-myapp'
+        template: 'infra/templates/webAppTemplate.json'
+        parameters: |
+          location=eastus
+          baseAppName=myapp
+          regionShort=eus
+          environment=dev

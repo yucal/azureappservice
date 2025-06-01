@@ -27,3 +27,4 @@ jobs:
           location=germanywestcentral
           baseAppName=myapp
           environment=dev
+          webAppName=myapp-web-eus

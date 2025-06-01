@@ -14,7 +14,7 @@
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2022-03-01",
       "name": "[variables('appServicePlanName')]",
-      "location": "[variables('location')]",
+      "location": "East US",
       "sku": {
         "name": "S1",
         "tier": "Standard"
@@ -25,7 +25,7 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[variables('webAppName')]",
-      "location": "[variables('location')]",
+      "location": "East US",
       "dependsOn": [
         "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
       ],

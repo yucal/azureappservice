@@ -27,9 +27,4 @@ jobs:
         subscriptionId: ${{ fromJson(secrets.AZURE_CREDENTIALS).subscriptionId }}
         resourceGroupName: 'rg-dev-myapp'
         template: 'infra/templates/webAppTemplate.json'
-        parameters: |
-          location=eastus
-          baseAppName=myapp
-          regionShort=eus
-          environment=dev
-
+       

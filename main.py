@@ -19,6 +19,3 @@ def read_root():
 
 # You can keep the uvicorn run command for local testing outside of Azure
 # This part is ignored by Azure Functions but useful for development
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

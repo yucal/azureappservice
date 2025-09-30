@@ -11,6 +11,10 @@ pool:
 
 
 steps:
+- task: DownloadPipelineArtifact@2
+  inputs:
+    buildType: 'current'
+    targetPath: '$(Pipeline.Workspace)'
 - task: AzureFunctionApp@2
   inputs:
     connectedServiceNameARM: 'DevTestServiceConnection'

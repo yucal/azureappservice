@@ -1,7 +1,6 @@
 # app/routers/palo_alto.py
 
 from fastapi import APIRouter, HTTPException, Depends
-
 from app.services.service import get_service_status_service
 from app.modules.schemas import ServiceStatus
 

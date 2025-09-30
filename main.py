@@ -1,8 +1,5 @@
-# main.py
-
 from fastapi import FastAPI
 from app.routers.router import router
-
 app = FastAPI(
     title="Palo Alto Service Checker API",
     description="A FastAPI for checking the status of services on a Palo Alto firewall.",

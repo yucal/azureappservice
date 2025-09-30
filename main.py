@@ -19,6 +19,6 @@ def read_root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok"}
+    return {"status": "BURAK"}
 # You can keep the uvicorn run command for local testing outside of Azure
 # This part is ignored by Azure Functions but useful for development

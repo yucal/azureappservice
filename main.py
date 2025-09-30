@@ -17,5 +17,8 @@ app.include_router(router)
 def read_root():
     return {"message": "Welcome to the Palo Alto Service Checker API"}
 
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 # You can keep the uvicorn run command for local testing outside of Azure
 # This part is ignored by Azure Functions but useful for development

@@ -1,28 +1,131 @@
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+# This pipeline builds, tests, and publishes a Python package,
+# and then deploys the source code to an Azure Function App.
 
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
+variables:
+  # Directory where the built package files (.whl, .tar.gz) will be placed
+  packageDirectory: 'dist'
+  # Name of the service connection for PyPI (Update this placeholder)
+  pypiServiceConnection: 'PyPI-Service-Connection-Name' 
+  # Path to the source code zip for Azure Function deployment
+  deploymentPackagePath: '$(Build.ArtifactStagingDirectory)/source.zip'
 
+stages:
+- stage: BuildAndTest
+  displayName: 'Build and Test Package Matrix'
+  jobs:
+  - job: Test
+    displayName: 'Test on Python $(PythonVersion)'
+    
+    # Strategy to run the job across multiple Python versions
+    strategy:
+      matrix:
+        Python38:
+          PythonVersion: '3.8'
+        Python39:
+          PythonVersion: '3.9'
+        Python310:
+          PythonVersion: '3.10'
+        Python311:
+          PythonVersion: '3.11'
 
-steps:
-- task: DownloadPipelineArtifact@2
-  inputs:
-    buildType: 'current'
-    targetPath: '$(Pipeline.Workspace)'
-- task: AzureFunctionApp@2
-  inputs:
-    connectedServiceNameARM: 'DevTestServiceConnection'
-    appType: 'functionAppLinux'
-    appName: 'azurefastapi'
-    deployToSlotOrASE: true
-    resourceGroupName: 'rg-aznetlab'
-    slotName: 'production'
-    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
-    runtimeStack: 'PYTHON|3.11'
-    deploymentMethod: 'auto'
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    steps:
+    
+    # 1. Use the specific Python version defined in the matrix
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(PythonVersion)'
+      displayName: 'Use Python $(PythonVersion)'
+
+    # 2. Install dependencies, linting tools, and testing tools
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt # Assumes you have a requirements.txt file
+        pip install flake8 pytest build
+      displayName: 'Install Dependencies'
+      
+    # 3. Analyze code quality (Linting)
+    - script: |
+        flake8 . --max-complexity=10 --max-line-length=120
+      displayName: 'Run Flake8 Linting'
+
+    # 4. Run unit and integration tests
+    - script: |
+        pytest
+      displayName: 'Run Pytest'
+
+    # 5. Build the source distribution (.tar.gz) and wheel (.whl) package
+    - script: |
+        python -m build
+      displayName: 'Build Python Package'
+
+    # 6. Save the built packages as an artifact for later stages (e.g., PyPI deployment)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        pathToPublish: '$(Build.SourcesDirectory)/$(packageDirectory)'
+        artifactName: 'PythonPackageDist'
+      displayName: 'Publish Package Artifacts'
+
+- stage: Deploy
+  displayName: 'Publish and Deploy'
+  # This stage only runs if the 'main' branch succeeds its build and test phase.
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  
+  jobs:
+  - job: FinalDeployment
+    displayName: 'Publish and Deploy Function App'
+    pool:
+      vmImage: 'ubuntu-latest'
+      
+    steps:
+    
+    # 1. Download the built package artifacts (the 'dist' folder contents)
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        buildType: 'current'
+        artifactName: 'PythonPackageDist'
+        targetPath: '$(Pipeline.Workspace)/$(packageDirectory)'
+      displayName: 'Download Built Package Artifacts'
+
+    # 2. Publish to a PyPI-compatible index (requires Twine service connection setup)
+    #    This step requires a service connection named 'pypiServiceConnection'
+    - task: TwineAuthenticate@1
+      inputs:
+        artifactFeed: '$(pypiServiceConnection)'
+      displayName: 'Twine Authenticate'
+
+    - script: |
+        python -m pip install twine
+        # Use the service connection name defined in the Twine Authenticate task
+        python -m twine upload --repository $(pypiServiceConnection) $(Pipeline.Workspace)/$(packageDirectory)/* --skip-existing
+      displayName: 'Publish Package to PyPI'
+      
+    # 3. Create a ZIP of the source directory for Azure Function deployment
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)' # Zip the root of the source code
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(deploymentPackagePath)'
+        replaceExistingArchive: true
+      displayName: 'Create Function Deployment Zip'
+
+    # 4. Deploy the source code to the Azure Function App
+    - task: AzureFunctionApp@2
+      inputs:
+        connectedServiceNameARM: 'DevTestServiceConnection'
+        appType: 'functionAppLinux'
+        appName: 'azurefastapi'
+        deployToSlotOrASE: true
+        resourceGroupName: 'rg-aznetlab'
+        slotName: 'production'
+        # Use the newly created zip file for deployment
+        package: '$(deploymentPackagePath)' 
+        runtimeStack: 'PYTHON|3.11'
+        deploymentMethod: 'auto'
+      displayName: 'Deploy to Azure Function App'

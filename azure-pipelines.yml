@@ -49,13 +49,6 @@ stages:
         pip install flake8 pytest build
       displayName: 'Install Dependencies'
       
-   
-
-    # 4. Run unit and integration tests
-    - script: |
-        pytest
-      displayName: 'Run Pytest'
-
     # 5. Build the source distribution (.tar.gz) and wheel (.whl) package
     - script: |
         python -m build

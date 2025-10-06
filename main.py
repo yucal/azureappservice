@@ -14,10 +14,12 @@ app = FastAPI(
 app.include_router(router)
 
 @app.get("/")
+
 def read_root():
     return {"message": "Welcome to the Palo Alto Service Checker API"}
 
 @app.get("/health")
+
 def health_check():
     return {"status": "BURAK"}
 # You can keep the uvicorn run command for local testing outside of Azure

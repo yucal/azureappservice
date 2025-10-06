@@ -10,6 +10,7 @@ router = APIRouter(
 )
 
 @router.get("/service-status/{service_name}", response_model=ServiceStatus)
+
 async def check_service_status(service_name: str):
     """
     Retrieves the status of a specific service from the Palo Alto firewall.

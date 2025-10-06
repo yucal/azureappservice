@@ -9,6 +9,7 @@ router = APIRouter(
     tags=["Palo Alto Services"]
 )
 
+
 @router.get("/service-status/{service_name}", response_model=ServiceStatus)
 
 

@@ -5,20 +5,19 @@ from app.services.service import get_service_status_service
 from app.modules.schemas import ServiceStatus
 
 router = APIRouter(
-    prefix="/paloalto",
-    tags=["Palo Alto Services"]
+    prefix="/koop",
+    tags=["Koop Services"]
 )
 
 
-@router.get("/service-status/{service_name}", response_model=ServiceStatus)
+@router.get("/koop-status", response_model=ServiceStatus)
 
-
-async def check_service_status(service_name: str):
+async def check_service_status():
     """
     Retrieves the status of a specific service from the Palo Alto firewall.
     """
     try:
-        status = get_service_status_service(service_name)
+        status = get_service_status_service()
         return status
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

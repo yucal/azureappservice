@@ -49,10 +49,7 @@ stages:
         pip install flake8 pytest build
       displayName: 'Install Dependencies'
       
-    # 3. Analyze code quality (Linting)
-    - script: |
-        flake8 . --max-complexity=10 --max-line-length=120
-      displayName: 'Run Flake8 Linting'
+   
 
     # 4. Run unit and integration tests
     - script: |

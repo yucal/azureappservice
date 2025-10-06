@@ -1,6 +1,6 @@
 # app/routers/palo_alto.py
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException
 from app.services.service import get_service_status_service
 from app.modules.schemas import ServiceStatus
 
@@ -10,6 +10,7 @@ router = APIRouter(
 )
 
 @router.get("/service-status/{service_name}", response_model=ServiceStatus)
+
 
 async def check_service_status(service_name: str):
     """

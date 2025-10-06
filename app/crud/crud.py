@@ -8,5 +8,4 @@ def get_service_status_from_panos() -> Optional[ServiceStatus]:
         service_name="PAN-OS",
         status="OK",
         detail="Service is running."
-    )
-        
+    )   

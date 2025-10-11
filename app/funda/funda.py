@@ -12,7 +12,7 @@ class fundabase():
         try:
             response = requests.get(url, headers=headers)
             response.raise_for_status()
-            return response.json()
+            return response.status_code
         except requests.RequestException as e:
             print(f"Error accessing Funda API: {e}")
             return None

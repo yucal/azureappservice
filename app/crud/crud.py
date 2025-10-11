@@ -7,8 +7,9 @@ def fundabase_instance():
     funda=fundabase()
     return funda.access_funda_api()
 def get_service_status_from_funda() -> Optional[ServiceStatus]:
+    funda_list=fundabase_instance()
     return ServiceStatus(
-        service_name="Houses Service",
+        service_name=funda_list,
         status="OK",
         detail="Service is running."
             )

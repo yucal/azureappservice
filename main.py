@@ -2,7 +2,6 @@
 from fastapi import FastAPI
 from app.routers import router
 
-
 # The `app` instance is what we will import in the Azure Functions entry point.
 app = FastAPI(
     title="Funda Checker API",

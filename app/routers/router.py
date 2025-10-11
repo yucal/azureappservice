@@ -11,7 +11,6 @@ router = APIRouter(
 
 
 @router.get("/koop-status", response_model=ServiceStatus)
-
 async def check_service_status():
     """
     Retrieves the status of a specific service from the Palo Alto firewall.

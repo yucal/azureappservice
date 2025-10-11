@@ -2,7 +2,6 @@
 from fastapi import FastAPI
 from app.routers import router
 
-# Load environment variables from .env file
 
 # The `app` instance is what we will import in the Azure Functions entry point.
 app = FastAPI(

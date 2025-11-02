@@ -1,22 +1,22 @@
 # app/routers/palo_alto.py
 
 from fastapi import APIRouter, HTTPException
-from app.services.service import get_service_status_service
-from app.modules.schemas import ServiceStatus
+from app.services import service
+from app.modules.schemas import senteceCheckRequest
 
 router = APIRouter(
-    prefix="/koop",
-    tags=["Koop Services"]
+    prefix="/language",
+    tags=["Language Services"]
 )
 
 
-@router.get("/koop-status", response_model=ServiceStatus)
-async def check_service_status():
+@router.get("/sentence",response_model=senteceCheckRequest)
+async def get_sentence_router():
     """
     Retrieves the status of a specific service from the Palo Alto firewall.
     """
     try:
-        status = get_service_status_service()
+        status = service.get_sentence_service()
         return status
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))

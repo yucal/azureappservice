@@ -1,9 +1,11 @@
 # app/services/palo_alto.py
 
-from app.modules.schemas import ServiceStatus
-from app.crud.crud import get_service_status_from_funda
+from app.modules.schemas import senteceCheckRequest
+from app.crud import crud
 
 
-def get_service_status_service() -> ServiceStatus:
-    status = get_service_status_from_funda()
-    return status
+def get_sentence_service() -> senteceCheckRequest:
+    status = crud.get_sentences()
+
+    return senteceCheckRequest( sentence=status)
+                               

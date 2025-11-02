@@ -7,6 +7,6 @@ logging.basicConfig(level=logging.DEBUG)
 def get_sentences():
     logging.debug("Fetching sentences from the data source.")
     # Simulate fetching data
-    sentence = ["burak","yucal"]
+    sentence = ["burak","yucal","test"]
     logging.debug(f"Fetched sentences: {sentence}")
     return sentence

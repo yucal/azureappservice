@@ -1,12 +1,12 @@
 # main.py
 from fastapi import FastAPI
 from app.routers import router
-
+app_root_path = os.environ.get("FASTAPI_ROOT_PATH", "")
 # The `app` instance is what we will import in the Azure Functions entry point.
 app = FastAPI(
-    title="Funda Checker API",
-    description="A FastAPI for checking the status of Funda.",
+    title="Sentence API",
     version="1.0.0",
+    root_path=app_root_path  # <--- THIS IS THE CRITICAL CHANGE
 )
 
 app.include_router(router.router)

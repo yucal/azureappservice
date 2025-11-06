@@ -2,6 +2,6 @@
 from pydantic import BaseModel
 
 class senteceCheckRequest(BaseModel):
-    sentence: list[str]
+    sentence: str
     
     

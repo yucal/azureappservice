@@ -1,0 +1,49 @@
+name: Trigger auto deployment for beerapi-app
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/beerapi-app-AutoDeployTrigger-93a960a2-1f32-4806-bf4f-bd26f69cb7f3.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.BEERAPIAPP_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.BEERAPIAPP_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.BEERAPIAPP_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          _targetLabelKey_: _targetLabel_
+          registryUrl: beerapiresgistery.azurecr.io
+          registryUsername: ${{ secrets.BEERAPIAPP_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.BEERAPIAPP_REGISTRY_PASSWORD }}
+          containerAppName: beerapi-app
+          resourceGroup: fastapi-rg
+          imageToBuild: beerapiresgistery.azurecr.io/beerapi-app:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+

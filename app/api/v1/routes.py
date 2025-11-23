@@ -15,7 +15,7 @@ async def get_static_data():
     Return static predefined data.
     """
     static_data = DataPayload(
-        name="Static User",
+        name="Static Data",
         age=99,
         email="static@example.com",
         is_active=False

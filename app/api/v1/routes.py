@@ -1,23 +1,15 @@
 from fastapi import APIRouter
 from schemas.dataschemas import DataPayload
-
+from v1 import data
 router = APIRouter(prefix="/v1", tags=["Data API"])
 
-@router.post("/echo", response_model=DataPayload)
+@router.post("/restaurant", response_model=DataPayload)
 async def echo_data(payload: DataPayload):
     """
     Echo back the received payload.
     """
     return payload
-@router.get("/static", response_model=DataPayload)
+@router.get("/restaurant", response_model=DataPayload)
 async def get_static_data():
-    """
-    Return static predefined data.
-    """
-    static_data = DataPayload(
-        name="Static Data",
-        age=99,
-        email="static@example.com",
-        is_active=False
-    )
+    static_data = data.fetch_restaurant_data()
     return static_data
